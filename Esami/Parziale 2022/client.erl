@@ -29,18 +29,19 @@ loop(MM1, MM2) ->
         {stop} -> exit(stopped);
         {do_reverse, List} ->
             {Sublist1, Sublist2} = lists:split(round(length(List) / 2), List),
+            Length = length(Sublist1),
             case length(List) rem 2 of
-                0 -> send(even, MM1, lists:enumerate(Sublist1), MM2, lists:enumerate(Sublist2));
-                1 -> send(odd, MM1, lists:enumerate(Sublist1), MM2, lists:enumerate([lists:last(Sublist1)|Sublist2]))
+                0 -> send(even, MM1, lists:enumerate(Sublist1), MM2, lists:enumerate(Sublist2), Length);
+                1 -> send(odd, MM1, lists:enumerate(Sublist1), MM2, lists:enumerate([lists:last(Sublist1)|Sublist2]), Length)
             end;
         Other -> io:format("Unexpected message: ~p~n", [Other])
     end,
     loop(MM1, MM2).
 
-send(Parity, MM1, [], MM2, []) ->
-    MM1 ! {do_rev, finish, Parity},
-    MM2 ! {do_rev, finish, Parity};
-send(Parity, MM1, [H1|T1], MM2, [H2|T2]) ->
+send(Parity, MM1, [], MM2, [], Length) ->
+    MM1 ! {do_rev, finish, Parity, Length},
+    MM2 ! {do_rev, finish, Parity, Length};
+send(Parity, MM1, [H1|T1], MM2, [H2|T2], Length) ->
     MM1 ! {do_rev, H1},
     MM2 ! {do_rev, H2},
-    send(Parity, MM1, T1, MM2, T2).
+    send(Parity, MM1, T1, MM2, T2, Length).
