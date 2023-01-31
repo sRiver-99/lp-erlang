@@ -1,2 +1,2 @@
 # lp-erlang
-Programmi scritti in Erlang durante il corso di Linguaggi di Programmazione
+[Appunti su Erlang](Appunti.md) e programmi scritti in Erlang realizzati durante il corso di Linguaggi di Programmazione.
